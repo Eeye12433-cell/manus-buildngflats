@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1769439129571,
+      "tag": "0000_public_killmonger",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1769439721213,
+      "tag": "0001_moaning_wildside",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1769441377689,
+      "tag": "0002_burly_excalibur",
+      "breakpoints": true
+    }
+  ]
+}
