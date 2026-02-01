@@ -1,6 +1,7 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
+import { invokeLLM } from "./_core/llm";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
@@ -8,6 +9,21 @@ import { TRPCError } from "@trpc/server";
 
 export const appRouter = router({
   system: systemRouter,
+  ai: router({
+    chat: protectedProcedure
+      .input(z.object({
+        messages: z.array(z.object({
+          role: z.enum(["system", "user", "assistant"]),
+          content: z.string(),
+        })),
+      }))
+      .mutation(async ({ input }) => {
+        const response = await invokeLLM({
+          messages: input.messages as any,
+        });
+        return response.choices[0].message.content as string;
+      }),
+  }),
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
@@ -152,6 +168,25 @@ export const appRouter = router({
 
   // ============ PAYMENT PROCEDURES ============
   payments: router({
+    createFawryCharge: protectedProcedure
+      .input(z.object({
+        apartmentId: z.number(),
+        amount: z.string(),
+        month: z.date(),
+      }))
+      .mutation(async ({ input }) => {
+        // This is a mock Fawry integration
+        // In a real app, you would call Fawry API here
+        const referenceNumber = "FAWRY-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+        return {
+          merchantCode: "1234567890",
+          merchantRefNum: referenceNumber,
+          paymentAmount: input.amount,
+          paymentMethod: "MWALLET",
+          description: `Payment for Apartment ${input.apartmentId} - ${input.month.toLocaleDateString()}`,
+        };
+      }),
+
     getByApartment: protectedProcedure
       .input(z.object({ apartmentId: z.number() }))
       .query(async ({ input }) => {

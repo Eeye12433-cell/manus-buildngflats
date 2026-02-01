@@ -10,19 +10,29 @@ import Apartments from "./pages/Apartments";
 import Payments from "./pages/Payments";
 import Fees from "./pages/Fees";
 import Reports from "./pages/Reports";
+import DashboardLayout from "./components/DashboardLayout";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/apartments" component={Apartments} />
-      <Route path="/payments" component={Payments} />
-      <Route path="/fees" component={Fees} />
-      <Route path="/reports" component={Reports} />
+      <Route path="/dashboard">
+        <DashboardLayout><Dashboard /></DashboardLayout>
+      </Route>
+      <Route path="/apartments">
+        <DashboardLayout><Apartments /></DashboardLayout>
+      </Route>
+      <Route path="/payments">
+        <DashboardLayout><Payments /></DashboardLayout>
+      </Route>
+      <Route path="/fees">
+        <DashboardLayout><Fees /></DashboardLayout>
+      </Route>
+      <Route path="/reports">
+        <DashboardLayout><Reports /></DashboardLayout>
+      </Route>
       <Route path="/404" component={NotFound} />
-      {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
   );

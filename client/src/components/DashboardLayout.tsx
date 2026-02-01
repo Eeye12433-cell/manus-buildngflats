@@ -26,10 +26,16 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
+import { AppChat } from "./AppChat";
+
+import { Home, CreditCard, Settings, BarChart3 } from "lucide-react";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Page 1", path: "/" },
-  { icon: Users, label: "Page 2", path: "/some-path" },
+  { icon: LayoutDashboard, label: "لوحة التحكم", path: "/dashboard" },
+  { icon: Home, label: "الشقق", path: "/apartments" },
+  { icon: CreditCard, label: "الدفعات", path: "/payments" },
+  { icon: Settings, label: "الرسوم", path: "/fees" },
+  { icon: BarChart3, label: "التقارير", path: "/reports" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -258,6 +264,7 @@ function DashboardLayoutContent({
           </div>
         )}
         <main className="flex-1 p-4">{children}</main>
+        <AppChat />
       </SidebarInset>
     </>
   );

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
-import { Plus, Eye } from "lucide-react";
+import { Plus, Eye, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Payments() {
@@ -43,6 +43,29 @@ export default function Payments() {
       toast.error(error.message || "حدث خطأ");
     },
   });
+
+  const fawryMutation = trpc.payments.createFawryCharge.useMutation({
+    onSuccess: (data) => {
+      toast.success(`تم إنشاء طلب دفع فوري بنجاح. رقم المرجع: ${data.merchantRefNum}`);
+      // In a real app, you would redirect to Fawry or show a QR code
+      console.log("Fawry Payment Data:", data);
+    },
+    onError: (error) => {
+      toast.error(error.message || "حدث خطأ في فوري");
+    },
+  });
+
+  const handleFawryPayment = () => {
+    if (!formData.apartmentId || !formData.amount) {
+      toast.error("يرجى ملء جميع الحقول المطلوبة");
+      return;
+    }
+    fawryMutation.mutate({
+      apartmentId: parseInt(formData.apartmentId),
+      amount: formData.amount,
+      month: new Date(formData.month),
+    });
+  };
 
   const resetForm = () => {
     setFormData({
@@ -182,9 +205,21 @@ export default function Payments() {
                   />
                 </div>
 
-                <Button type="submit" className="w-full">
-                  تسجيل الدفعة
-                </Button>
+                <div className="flex gap-2">
+                  <Button type="submit" className="flex-1">
+                    تسجيل الدفعة
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="flex-1 border-orange-500 text-orange-600 hover:bg-orange-50"
+                    onClick={handleFawryPayment}
+                    disabled={fawryMutation.isPending}
+                  >
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    دفع فوري
+                  </Button>
+                </div>
               </form>
             </DialogContent>
           </Dialog>
